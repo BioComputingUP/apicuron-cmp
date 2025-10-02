@@ -4,6 +4,8 @@ import {
   KurrentDBClient,
   NO_STREAM,
   START,
+  StreamNotFoundError,
+  StreamState,
 } from '@kurrent/kurrentdb-client';
 
 /**
@@ -20,15 +22,21 @@ import {
 export async function getLastRevision(
   client: KurrentDBClient,
   streamName: string,
-) {
+): Promise<StreamState> {
   const events = client.readStream(streamName, {
     fromRevision: START,
     direction: FORWARDS,
   });
   let revision: AppendStreamState = NO_STREAM;
 
-  for await (const { event } of events) {
-    revision = event?.revision ?? revision;
+  try {
+    for await (const { event } of events) {
+      revision = event?.revision ?? revision;
+    }
+  } catch (error) {
+    if (error instanceof StreamNotFoundError) {
+      return NO_STREAM;
+    }
   }
   return revision;
 }

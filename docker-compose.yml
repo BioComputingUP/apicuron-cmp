@@ -10,6 +10,8 @@ services:
       - ./backend/:/home/node/app
     ports:
       - "3000:3000"
+    env_file:
+      - .env
 
   kurrentdb:
     image: kurrentplatform/kurrentdb:25.0.1-x64-8.0-bookworm-slim
