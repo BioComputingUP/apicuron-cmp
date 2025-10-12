@@ -1,32 +1,30 @@
 import {
   OrcidPermissionGranted,
-  OrcidPermissionGrantedJSON,
-} from './consent-event';
+  OrcidPermissionGrantedEventType,
+  OrcidPermissionGrantedType,
+  Permission,
+} from './events';
 import { FORWARDS, KurrentDBClient, START } from '@kurrent/kurrentdb-client';
-
-// interface EventAggregate<T> {
-//   applyEvent(event: T): void;
-// }
 
 export class UserConsent {
   private id: string;
   private orcidId: string;
-  private grantedPermissions: string[] = [];
+  private grantedPermissions: Permission[] = [];
   private lastUpdated: Date;
   static revision: bigint;
+  static baseStream = 'usersconsent';
 
   static getStream(orcidId: string) {
-    return 'users/consent-' + orcidId;
+    return `${this.baseStream}-${orcidId}`;
   }
 
   private constructor() {}
 
   applyConsentGrantedEvent(event: OrcidPermissionGranted) {
     this.orcidId = event.orcidId;
-    if (!this.grantedPermissions.includes(event.permission)) {
+    if (!this.hasConsent(event.permission)) {
       this.grantedPermissions.push(event.permission);
     }
-    this.grantedPermissions.push(event.permission);
     this.lastUpdated = event.timestamp;
   }
 
@@ -34,7 +32,7 @@ export class UserConsent {
     userId: string,
     client: KurrentDBClient,
   ) {
-    const events = client.readStream<OrcidPermissionGrantedJSON>(
+    const events = client.readStream<OrcidPermissionGrantedEventType>(
       this.getStream(userId),
       {
         fromRevision: START,
@@ -43,7 +41,10 @@ export class UserConsent {
     );
     const aggregate = new UserConsent();
     for await (const { event } of events) {
-      const data = event?.data;
+      if (event?.type != OrcidPermissionGrantedType) {
+        continue;
+      }
+      const data = event.data;
       const revision = event?.revision;
       if (!data || !revision) {
         throw new Error('Event data or revision is undefined');
@@ -56,11 +57,14 @@ export class UserConsent {
 
   applyEvents() {}
 
-  hasConsent(permission: string): boolean {
-    return this.grantedPermissions.includes(permission);
+  hasConsent(permission: Permission): boolean {
+    const index = this.grantedPermissions.findIndex(
+      (perm) => perm.identifier === permission.identifier,
+    );
+    return index !== -1;
   }
 
-  getPermissions(): string[] {
+  getPermissions(): Permission[] {
     return [...this.grantedPermissions];
   }
 }

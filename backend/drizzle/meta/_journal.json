@@ -1,0 +1,62 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1759661340283,
+      "tag": "0000_legal_tigra",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1759661950647,
+      "tag": "0001_futuristic_jazinda",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1759695118512,
+      "tag": "0002_easy_electro",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1759695123252,
+      "tag": "0003_perfect_jazinda",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1759695142469,
+      "tag": "0004_wandering_ken_ellis",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1759712354607,
+      "tag": "0005_rainy_demogoblin",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1760269843416,
+      "tag": "0006_sparkling_eternals",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1760269872172,
+      "tag": "0007_nebulous_dreaming_celestial",
+      "breakpoints": true
+    }
+  ]
+}

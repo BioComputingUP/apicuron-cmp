@@ -3,7 +3,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 export function setupSwagger(
   app: INestApplication,
-  apiDocsPath: string = 'api-docs',
+  apiDocsPath: string = 'docs',
 ) {
   const config = new DocumentBuilder()
     .setTitle('Consent Management Platform')

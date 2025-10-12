@@ -9,6 +9,8 @@ import { OrcidGrantConsentDto } from './dto/grant-consent.dto';
 import { GrantConsentCommand } from './commands/grant-consent.command';
 import { CommandBus } from '@nestjs/cqrs';
 import { ApiOperation } from '@nestjs/swagger';
+import { OrcidPermissionGrantedEventType } from './events';
+import { EventData } from '@kurrent/kurrentdb-client/dist/types/events';
 
 @Controller('consent')
 export class ConsentManagerController {
@@ -31,7 +33,10 @@ export class ConsentManagerController {
     );
 
     try {
-      await this.commandBus.execute(command);
+      const savedEvent: EventData<OrcidPermissionGrantedEventType> =
+        await this.commandBus.execute(command);
+
+      return savedEvent.data;
     } catch (error: any) {
       // Handle error
       if (error instanceof Error) {

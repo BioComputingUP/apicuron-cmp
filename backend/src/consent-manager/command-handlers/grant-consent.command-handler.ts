@@ -5,12 +5,12 @@ import {
   getLastRevision,
   NestjsKurrentService,
 } from '@biocomputingup/nestjs-kurrent';
-import { jsonEvent, StreamState } from '@kurrent/kurrentdb-client';
+import { EventData, jsonEvent, StreamState } from '@kurrent/kurrentdb-client';
 import { UserConsent } from '../user-consent.aggregate';
 import {
-  OrcidPermissionGrantedJSON,
+  OrcidPermissionGrantedEventType,
   OrcidPermissionGrantedType,
-} from '../consent-event';
+} from '../events';
 
 @CommandHandler(GrantConsentCommand)
 export class GrantConsentCommandHandler
@@ -18,7 +18,9 @@ export class GrantConsentCommandHandler
 {
   logger = new Logger(GrantConsentCommandHandler.name);
   constructor(private readonly eventdb: NestjsKurrentService) {}
-  async execute(command: GrantConsentCommand): Promise<any> {
+  async execute(
+    command: GrantConsentCommand,
+  ): Promise<EventData<OrcidPermissionGrantedEventType>> {
     // Ensuring optimistic concurrency by checking the last event
     // https://docs.kurrent.io/clients/node/v1.0/appending-events.html#handling-concurrency
     const { orcidId, permission, timestamp } = command;
@@ -27,7 +29,7 @@ export class GrantConsentCommandHandler
       UserConsent.getStream(orcidId),
     );
 
-    const eventObj: OrcidPermissionGrantedJSON = {
+    const eventObj: OrcidPermissionGrantedEventType = {
       type: OrcidPermissionGrantedType,
       data: {
         orcidId,
@@ -35,7 +37,7 @@ export class GrantConsentCommandHandler
         timestamp,
       },
     };
-    const event = jsonEvent(eventObj);
+    const event = jsonEvent<OrcidPermissionGrantedEventType>(eventObj);
 
     await this.eventdb.client.appendToStream(
       UserConsent.getStream(orcidId),
@@ -44,5 +46,7 @@ export class GrantConsentCommandHandler
         streamState: revision,
       },
     );
+
+    return event;
   }
 }

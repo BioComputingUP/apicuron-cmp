@@ -1,17 +1,8 @@
 import { JSONEventType } from '@kurrent/kurrentdb-client/dist/types/events';
-
-export const OrcidPermissionGrantedType = 'OrcidConsentGrantedV1';
-// Consent Granted Event
-export type OrcidPermissionGranted = {
-  orcidId: string;
-  permission: string;
-  timestamp: Date;
-};
-
-export type OrcidPermissionGrantedJSON = JSONEventType<
-  typeof OrcidPermissionGrantedType,
-  OrcidPermissionGranted
->;
+import {
+  OrcidPermissionGranted,
+  OrcidPermissionGrantedEventType,
+} from './permission-granted';
 
 // Consent Revoked Event
 export const OrcidPermissionRevokedType = 'OrcidConsentRevokedV1';
@@ -27,7 +18,7 @@ export type OrcidPermissionRevokedJSON = JSONEventType<
 
 // User Consent Event (Union of all events)
 export type OrcidPermissionJSONEvent =
-  | OrcidPermissionGrantedJSON
+  | OrcidPermissionGrantedEventType
   | OrcidPermissionRevokedJSON;
 
 export type UserConsentEvent = OrcidPermissionGranted | OrcidPermissionRevoked;

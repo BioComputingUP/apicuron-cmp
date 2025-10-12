@@ -1,0 +1,1 @@
+ALTER TABLE `USER_CONSENTS` RENAME COLUMN "permission_name" TO "permissions";

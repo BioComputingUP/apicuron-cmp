@@ -1,2 +1,2 @@
 export * from './consent-manager.module';
-export * from './consent-manager.service';
+export * from './services/consent-manager.service';
