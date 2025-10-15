@@ -49,7 +49,6 @@ export class SubscriptionService implements OnModuleDestroy, OnModuleInit {
       },
     );
 
-    await Promise.resolve();
     // Clear existing data
     await this.cleanupReadModel();
 

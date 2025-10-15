@@ -129,6 +129,95 @@
           }
         }
       }
+    },
+    "apicuron-consent-wc": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "projects/apicuron-consent-wc",
+      "sourceRoot": "projects/apicuron-consent-wc/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:application",
+          "options": {
+            "outputPath": "dist/apicuron-consent-wc",
+            "index": "projects/apicuron-consent-wc/src/index.html",
+            "browser": "projects/apicuron-consent-wc/src/main.ts",
+            "polyfills": [
+              "zone.js"
+            ],
+            "tsConfig": "projects/apicuron-consent-wc/tsconfig.app.json",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/apicuron-consent-wc/public"
+              }
+            ],
+            "styles": [
+              "projects/apicuron-consent-wc/src/styles.css"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kB",
+                  "maximumError": "4kB"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "apicuron-consent-wc:build:production"
+            },
+            "development": {
+              "buildTarget": "apicuron-consent-wc:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ],
+            "tsConfig": "projects/apicuron-consent-wc/tsconfig.spec.json",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/apicuron-consent-wc/public"
+              }
+            ],
+            "styles": [
+              "projects/apicuron-consent-wc/src/styles.css"
+            ],
+            "scripts": []
+          }
+        }
+      }
     }
   }
 }

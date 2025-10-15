@@ -11,6 +11,7 @@ export type StreamEvent<
   ) => EventClassInstance<SerializedEvent>;
 };
 
+// TODO: Document this function and the concept behind it
 export function StreamEvent<
   SerializedEvent extends JSONType,
   TypeString extends string,

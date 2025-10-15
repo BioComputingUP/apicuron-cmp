@@ -5,7 +5,7 @@
   "compilerOptions": {
     "paths": {
       "apicuron-consent": [
-        "./dist/apicuron-consent"
+        "./node_modules/apicuron-consent"
       ]
     },
     "outDir": "./dist/out-tsc",

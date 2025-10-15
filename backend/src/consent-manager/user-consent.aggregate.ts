@@ -29,11 +29,11 @@ export class UserConsent {
   }
 
   static async loadAggregateFromEvents(
-    userId: string,
+    orcidId: string,
     client: KurrentDBClient,
   ) {
     const events = client.readStream<OrcidPermissionGrantedEventType>(
-      this.getStream(userId),
+      this.getStream(orcidId),
       {
         fromRevision: START,
         direction: FORWARDS,

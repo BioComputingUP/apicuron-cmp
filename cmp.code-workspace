@@ -7,5 +7,20 @@
             "typescript.tsconfig": "./tsconfig.json"
             }
         },
-    ]
+        {
+            "path": "frontend",
+            "settings": {
+            "typescript.tsdk": "./node_modules/typescript/lib",
+            "typescript.tsconfig": "./tsconfig.json"
+            }
+        },
+        {
+            "path": ".",
+            "settings": {
+            }
+        },
+    ],
+    "settings": {
+        "typescript.tsdk": "frontend/node_modules/typescript/lib"
+    }
 }

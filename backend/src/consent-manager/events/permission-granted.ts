@@ -8,11 +8,13 @@ import { EventClassInstance } from '../interfaces/events';
 
 export const OrcidPermissionGrantedType = 'OrcidConsentGrantedV1';
 // Consent Granted Event
+// TODO: move to appropriate place
 export type Permission = {
   identifier: string;
   name: string;
   description: string;
 };
+
 export type OrcidPermissionGranted = {
   orcidId: string;
   permission: Permission;

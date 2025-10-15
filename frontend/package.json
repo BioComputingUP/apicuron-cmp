@@ -7,6 +7,13 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "build:lib:ng": "npx ng build apicuron-consent",
+    "build:lib:tailwind": "npx tailwindcss -c tailwind-library.config.js -i projects/apicuron-consent/src/styles.css -o dist/apicuron-consent/styles.css --minify",
+    "build:lib": "npm run build:lib:ng && npm run build:lib:tailwind",
+    "watch:lib:ng": "npx ng build apicuron-consent --watch",
+    "watch:lib:tailwind": "npx tailwindcss -c tailwind-library.config.js -i projects/apicuron-consent/src/styles.css -o dist/apicuron-consent/styles.css --watch",
+    "watch:lib": "npx concurrently 'npm run watch:lib:tailwind' 'npm run watch:lib:ng'",
+    "watch:app": "npx concurrently 'npm run watch' 'npm run watch:lib:ng' 'npm run watch:lib:tailwind'",
     "serve:ssr:consent-widget": "node dist/consent-widget/server/server.mjs"
   },
   "private": true,
@@ -15,6 +22,7 @@
     "@angular/common": "^18.2.0",
     "@angular/compiler": "^18.2.0",
     "@angular/core": "^18.2.0",
+    "@angular/elements": "^18.2.14",
     "@angular/forms": "^18.2.0",
     "@angular/platform-browser": "^18.2.0",
     "@angular/platform-browser-dynamic": "^18.2.0",
@@ -33,6 +41,8 @@
     "@types/express": "^4.17.17",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^18.18.0",
+    "autoprefixer": "^10.4.21",
+    "concurrently": "^9.2.1",
     "jasmine-core": "~5.2.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
@@ -40,6 +50,8 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "ng-packagr": "^18.2.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.18",
     "typescript": "~5.5.2"
   }
 }
