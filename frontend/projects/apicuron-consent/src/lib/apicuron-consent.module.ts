@@ -1,12 +1,23 @@
-import { Component, NgModule } from '@angular/core';
-import { ApicuronConsentService } from './apicuron-consent.service';
+import { NgModule } from '@angular/core';
 import { OrcidInputComponent } from './components/orcid-input/orcid-input.component';
 import { ApicuronConsentComponent } from './apicuron-consent.component';
+import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ConsentCheckboxComponent } from './components/checkbox/checkbox.component';
 
 @NgModule({
-  declarations: [OrcidInputComponent, ApicuronConsentComponent],
-  imports: [],
-  providers: [ApicuronConsentService],
-  exports: [ApicuronConsentComponent],
+  declarations: [
+    OrcidInputComponent,
+    ConsentCheckboxComponent,
+    ApicuronConsentComponent,
+  ],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, HttpClientModule],
+  providers: [],
+  exports: [
+    ApicuronConsentComponent,
+    OrcidInputComponent,
+    ConsentCheckboxComponent,
+  ],
 })
 export class ApicuronConsentModule {}

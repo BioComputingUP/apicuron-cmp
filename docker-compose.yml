@@ -12,6 +12,8 @@ services:
       - "3000:3000"
     env_file:
       - .env
+    depends_on:
+      - kurrentdb
 
   kurrentdb:
     image: kurrentplatform/kurrentdb:25.0.1-x64-8.0-bookworm-slim

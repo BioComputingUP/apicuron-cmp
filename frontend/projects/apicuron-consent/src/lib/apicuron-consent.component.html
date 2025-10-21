@@ -1,3 +1,12 @@
-<h2 class="text-blue-500 bg-gray-500">Hello world from apicuron-consent-component</h2>
-
-<ac-orcid-input></ac-orcid-input>
+<ng-container *ngIf="config$ | async as config">
+    <div class="flex flex-col">
+    <label for="orcid-id-input" class="pb-1">
+        {{ config.orcidInputLabel }}
+    </label>
+    <ac-orcid-input></ac-orcid-input>
+    <small class="text-xs font-light">
+        {{ config.searchHint }}
+    </small>
+    <ac-consent-checkbox></ac-consent-checkbox>
+</div>
+</ng-container>

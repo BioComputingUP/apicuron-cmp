@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo for testing Consent Widget</title>
+</head>
+
+<body>
+    <ac-apicuron-consent></ac-apicuron-consent>
+
+    <script src="./widget.js"></script>
+    <script>
+
+        // (function () {
+        //     const widget = document.querySelector("ac-apicuron-consent");
+        //     const config = {
+
+        //         apiUrl: 'http://localhost:3000/',
+        //         privacyPolicyUrl: 'https://raw.githubusercontent.com/intact-portal/intact-portal-documentation/master/assets/IntAct-and-Complex-Portal-websites-privacy-notice.pdf',
+        //         tosUrl: 'https://www.ebi.ac.uk/about/terms-of-use/',
+        //     }
+        //     widget.config = config;
+        // })();
+        (async function () {
+            if (!!window.AConsentWidget) {
+                console.log(' widget config');
+            } else {
+                console.error('ConsentWidget function not found');
+            }
+        })();
+    </script>
+</body>
+
+</html>

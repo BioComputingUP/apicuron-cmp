@@ -1,5 +1,5 @@
-import { Observable, OperatorFunction, of } from "rxjs";
-import { switchMap, catchError, startWith, scan, map } from "rxjs/operators";
+import { Observable, OperatorFunction, of } from 'rxjs';
+import { switchMap, catchError, startWith, scan, map } from 'rxjs/operators';
 
 export interface LoadingState<T = unknown> {
   loading: boolean;

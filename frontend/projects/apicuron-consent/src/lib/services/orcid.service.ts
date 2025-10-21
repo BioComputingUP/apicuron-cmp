@@ -3,45 +3,41 @@ import { Injectable } from '@angular/core';
 import { Observable, combineLatest, of } from 'rxjs';
 import { map, shareReplay, switchMap } from 'rxjs/operators';
 import { OrcidProfile } from '../model/orcid-profile.model';
+import { ConfigService } from './config.service';
 
 @Injectable()
 export class OrcidService {
-  constructor(protected http: HttpClient) {}
+  private apiUrl$: Observable<string>;
+  constructor(protected http: HttpClient, protected config: ConfigService) {
+    this.apiUrl$ = this.config.get('apiUrl');
+  }
 
-  private orcid_url = 'https://pub.orcid.org/v3.0/';
+  orcid_url = 'https://pub.orcid.org/v3.0/';
+
   private base_headers = {
     Accept: 'application/json',
   };
-
-  searchOrcidProfile(term: string): Observable<OrcidProfile[]> {
-    const searchUrl = `${this.orcid_url}expanded-search`;
-    const query = `given-and-family-names:${term} OR credit-name: ${term}`;
-
-    return this.http
-      .get(searchUrl, {
-        headers: {
-          version: '2',
-          Accept: 'application/json',
-        },
-        params: {
-          q: query,
-          rows: '20',
-        },
-      })
-      .pipe(
-        shareReplay(),
-        map((response: any) => {
-          if (!response['expanded-result']) {
-            return [];
-          }
-          return response['expanded-result'];
-        }),
-        map((results: any[]): OrcidProfile[] => {
-          return results.map((result) =>
-            new OrcidProfile().deserialize(result)
-          );
+  searchOrcidProfile(query: string): Observable<OrcidProfile[]> {
+    return this.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.get(`${apiUrl}orcid/search`, {
+          headers: this.base_headers,
+          params: {
+            query,
+          },
         })
-      );
+      ),
+      shareReplay(1),
+      map((response: any) => {
+        if (!response['expanded-result']) {
+          return [];
+        }
+        return response['expanded-result'];
+      }),
+      map((results: any[]): OrcidProfile[] => {
+        return results.map((result) => new OrcidProfile().deserialize(result));
+      })
+    );
   }
 
   getOrcidProfile(orcid_id: string): Observable<OrcidProfile> {

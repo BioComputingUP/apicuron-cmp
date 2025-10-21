@@ -1,1 +1,117 @@
-<input type="text" placeholder="Enter ORCID iD" />
+<ng-template #empty_list> <!-- Template for Empty Suggestions -->
+    <div
+        class="cursor-pointer py-2 px-4 w-full text-sm text-gray-800 hover:bg-gray-100 rounded-lg focus:outline-hidden focus:bg-gray-100">
+        <div class="flex justify-between items-center w-full">
+            <span>No ORCID Profiles found for "{{
+                (searchQuery$ | async) }}"</span>
+        </div>
+    </div>
+</ng-template>
+
+
+<ng-template #orcid_profile_entry let-profile> <!-- Template for Orcid Profile Entry -->
+    <div class="block flex-none pr-1 min-w-2 min-h-2 w-6 h-6 sm:w-8 sm:h-8">
+        <img src="https://orcid.org/assets/vectors/orcid.logo.icon.svg" class="m-auto" alt="Orcid Logo" />
+    </div>
+    <div class="flex flex-auto flex-row flex-wrap">
+        <span class="hover:underline block pr-1 text-sm">
+            <b>{{ profile.displayedName }}</b>
+        </span>
+        <span class="hover:underline block pr-1 text-[0.5rem] sm:text-sm">
+            {{ profile.orcid_id }}
+        </span>
+    </div>
+    <a class="ml-auto block text-blue-400 underline whitespace-nowrap text-xs sm:text-sm" [href]="profile.profileUrl"
+        rel="noreferrer" target="_blank">Visit
+        Orcid Profile
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+            class="size-4 inline-block align-middle">
+            <path fill-rule="evenodd"
+                d="M15.75 2.25H21a.75.75 0 0 1 .75.75v5.25a.75.75 0 0 1-1.5 0V4.81L8.03 17.03a.75.75 0 0 1-1.06-1.06L19.19 3.75h-3.44a.75.75 0 0 1 0-1.5Zm-10.5 4.5a1.5 1.5 0 0 0-1.5 1.5v10.5a1.5 1.5 0 0 0 1.5 1.5h10.5a1.5 1.5 0 0 0 1.5-1.5V10.5a.75.75 0 0 1 1.5 0v8.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V8.25a3 3 0 0 1 3-3h8.25a.75.75 0 0 1 0 1.5H5.25Z"
+                clip-rule="evenodd" />
+        </svg>
+
+    </a>
+</ng-template>
+
+<div class="relative max-w-xl">
+    <div class="relative">
+        <div
+            class="px-2 md:px-4 flex  flex-row items-center w-full bg-white border-gray-200 rounded-lg sm:text-sm border-2 border-transparent focus-within:border-blue-500 focus-within:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none min-h-10 shadow-lg">
+            <ng-container [ngClass]="{
+                'block': (searchingMode$ | async) === 'selected',
+                'hidden': (searchingMode$ | async) !== 'selected'
+            }">
+                <div *ngIf="userSelected$ | async as userSelected"
+                    class="bg-white py-2.5 sm:py-3 flex flex-row items-center pr-1 sm:pr-2 grow">
+                    <ng-container
+                        *ngTemplateOutlet="orcid_profile_entry; context: { $implicit: userSelected, profile: userSelected }"></ng-container>
+                </div>
+
+            </ng-container>
+            <input class="grow py-2.5 sm:py-3 outline-none" name="orcid-id-input" type="text" role="combobox"
+                aria-expanded="false" [ngModel]="searchText" (ngModelChange)="searchText = $event; onInput($event)" #searchInput
+                (keyup)="keyPress($event)" [placeholder]="placeholder$ | async" [ngClass]="{
+                    'block': (searchingMode$ | async) != 'selected',
+                    'hidden': (searchingMode$ | async) === 'selected'
+                }" />
+            <div class="ml-auto flex flex-col justify-center" aria-expanded="false" role="button">
+                <!-- Search icon, displayed when the idle, starts search -->
+                <button [ngClass]="{ 'hidden': (searchingMode$ | async) != 'idle' }" (click)="openSearch()">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="size-4">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                    </svg>
+
+                </button>
+                <!-- Cross icon, displayed when not idle (searching or selected) -->
+                <button [ngClass]="{ 'hidden': (searchingMode$ | async) == 'idle' }" (click)="closeAndResetSearch()">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="size-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                    </svg>
+                </button>
+
+            </div>
+        </div>
+    </div>
+    <div class="absolute z-50 w-full max-h-72 p-1 bg-white border border-gray-200 rounded-lg overflow-hidden overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 flex-col"
+        role="listbox" [ngClass]="{
+            'hidden': (searchingMode$ | async) != 'searching',
+            'flex min-h-12': (searchingMode$ | async) === 'searching'
+        }">
+        <ng-container *ngIf="suggestions$ | async as suggestions">
+            <!-- Have suggestions -->
+            <ng-container *ngIf="suggestions.loading == true">
+
+                <div class="w-full text-sm">
+                    <div class="flex justify-center items-center w-full py-1">
+                        <div #spinner
+                            class="w-8 h-8 text-center inline-block box-border rounded-[50%] border-b-transparent border-[4px] border-solid border-black animate-spin">
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="suggestions.data">
+                <ng-container *ngIf="suggestions.data.length > 0 else empty_list">
+                    <div *ngFor="let profileSuggestion of suggestions.data"
+                        class="cursor-pointer py-2 px-2 sm:px-4 w-full text-sm text-gray-800 hover:bg-gray-100 rounded-lg focus:outline-hidden focus:bg-gray-100 flex flex-row items-center"
+                        role="option" tabindex="0" (click)="selectProfile(profileSuggestion)">
+                        <ng-container
+                            *ngTemplateOutlet="orcid_profile_entry; context: { $implicit: profileSuggestion, profile: profileSuggestion }"></ng-container>
+                    </div>
+                </ng-container>
+            </ng-container>
+
+            <ng-container *ngIf="suggestions.error">
+                <div class="block my-auto w-full text-sm text-red-600 align-middle">
+                    Error: An unexpected error occurred: "{{ suggestions.error.message }}"
+                </div>
+            </ng-container>
+
+        </ng-container>
+
+
+    </div>
+</div>

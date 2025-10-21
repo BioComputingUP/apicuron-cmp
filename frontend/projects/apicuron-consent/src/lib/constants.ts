@@ -1,0 +1,2 @@
+export const ACONSENT_CONFIG = 'ACONSENT_CONFIG' as const;
+export const INTERNAL_ACONSENT_CONFIG = 'INTERNAL_ACONSENT_CONFIG' as const;

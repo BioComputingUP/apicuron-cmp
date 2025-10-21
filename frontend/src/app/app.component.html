@@ -1,5 +1,66 @@
-<div>
-  Orcid Input Component Below
+<div class="dark navbar bg-base-100 shadow-lg dark:bg-base-300">
+  <div class="flex-1">
+    <h1 class="text-2xl font-bold text-base-content dark:text-base-content">
+      Web Component Showcase
+    </h1>
+  </div>
+</div>
 
-  <apicuron-consent></apicuron-consent>
+<div class="container mx-auto p-6">
+  <!-- Main Grid Layout -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Slot 1: Default State -->
+    <app-example-base></app-example-base>
+    <!-- Slot 2: Interactive State -->
+    <!-- <app-example-config-text></app-example-config-text> -->
+
+    <!-- <app-submit-data-example></app-submit-data-example> -->
+    <!-- <div class="card bg-base-100 shadow-xl dark:bg-base-300">
+      <div class="card-body">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="card-title text-base-content dark:text-base-content">
+            <i class="fas fa-spinner text-accent dark:text-accent-content"></i>
+            Submit Data Call
+          </h2>
+          <div class="badge badge-accent dark:badge-outline">Submit Data function call</div>
+        </div>
+        <div class="flex flex-wrap gap-2 mb-4">
+          <button class="btn btn-xs btn-accent dark:btn-outline">Send Data</button>
+          <button class="btn btn-xs btn-outline dark:btn-accent">Stop Loading</button>
+          <select class="select select-xs dark:bg-base-200 dark:text-base-content">
+            <option>Fast</option>
+            <option>Normal</option>
+            <option>Slow</option>
+          </select>
+        </div>
+        <div
+          class="bg-base-200 p-8 rounded-lg min-h-32 border-2 border-dashed border-base-300 flex items-center justify-center dark:bg-base-200 dark:border-base-100">
+          <apicuron-consent ></apicuron-consent>
+        </div>
+      </div>
+    </div> -->
+
+    <!-- Slot 4: Error State -->
+    <!-- <div class="card bg-base-100 shadow-xl dark:bg-base-300">
+      <div class="card-body">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="card-title text-base-content dark:text-base-content">
+            <i class="fas fa-exclamation-triangle text-error dark:text-error-content"></i>
+            Error State
+          </h2>
+          <div class="badge badge-error dark:badge-outline">Error</div>
+        </div>
+        <div class="flex flex-wrap gap-2 mb-4">
+          <button class="btn btn-xs btn-error dark:btn-outline">Trigger Error</button>
+          <button class="btn btn-xs btn-success dark:btn-outline">Clear Error</button>
+          <button class="btn btn-xs btn-ghost dark:btn-outline">Retry</button>
+        </div>
+        <div
+          class="bg-base-200 p-8 rounded-lg min-h-32 border-2 border-dashed border-base-300 flex items-center justify-center dark:bg-base-200 dark:border-base-100">
+          <span class="text-base-content/50 dark:text-base-content/70">Component Slot 4</span>
+        </div>
+      </div>
+    </div> -->
+  </div>
+
 </div>
