@@ -13,7 +13,7 @@
     "watch:lib:ng": "npx ng build apicuron-consent --watch",
     "watch:lib:tailwind": "npx tailwindcss -c tailwind-library.config.js -i projects/apicuron-consent/src/styles.css -o projects/apicuron-consent/styles.css --watch",
     "watch:lib": "npx concurrently 'npm run watch:lib:tailwind' 'npm run watch:lib:ng'",
-    "watch:app": "npx concurrently 'npm run watch:lib:ng' 'npm run watch:lib:tailwind' 'npm run watch'",
+    "watch:app": "npx concurrently 'npm run watch:lib:ng' 'npm run watch:lib:tailwind' 'npm run serve'",
     "build:wc:app": "ng build apicuron-consent-wc --configuration=development && node projects/apicuron-consent-wc/scripts/build.js",
     "build:wc": "npm run build:lib && npm run build:wc:app",
     "serve:ssr:consent-widget": "node dist/consent-widget/server/server.mjs"
