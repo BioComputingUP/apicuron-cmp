@@ -38,20 +38,17 @@
     <div class="relative">
         <div
             class="px-2 md:px-4 flex  flex-row items-center w-full bg-white border-gray-200 rounded-lg sm:text-sm border-2 border-transparent focus-within:border-blue-500 focus-within:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none min-h-10 shadow-lg">
-            <div [ngClass]="{
-                'block': (searchingMode$ | async) === 'selected',
-                'hidden': (searchingMode$ | async) !== 'selected'
-            }">
-                <div *ngIf="userSelected$ | async as userSelected"
-                    class="bg-white py-2.5 sm:py-3 flex flex-row items-center pr-1 sm:pr-2 grow">
-                    <ng-container
-                        *ngTemplateOutlet="orcid_profile_entry; context: { $implicit: userSelected, profile: userSelected }"></ng-container>
-                </div>
-
+            <div *ngIf="userSelected$ | async as userSelected" [ngClass]="{
+            'block': (searchingMode$ | async) === 'selected',
+            'hidden': (searchingMode$ | async) !== 'selected' }"
+                class="bg-white py-2.5 sm:py-3 flex flex-row items-center pr-1 sm:pr-2 grow">
+                <ng-container
+                    *ngTemplateOutlet="orcid_profile_entry; context: { $implicit: userSelected, profile: userSelected }"></ng-container>
             </div>
-            <input class="grow py-2.5 sm:py-3 outline-none" name="orcid-id-input" type="text" role="combobox" (input)="onInput($event)"
-                aria-expanded="false" [ngModel]="searchText" (ngModelChange)="searchText = $event; onInput($event)" #searchInput
-                (keyup)="keyPress($event)" [placeholder]="placeholder$ | async" [ngClass]="{
+            <input class="grow py-2.5 sm:py-3 outline-none" name="orcid-id-input" type="text" role="combobox"
+                (input)="onInput($event)" aria-expanded="false" [ngModel]="searchText"
+                (ngModelChange)="searchText = $event; onInput($event)" #searchInput (keyup)="keyPress($event)"
+                [placeholder]="placeholder$ | async" [ngClass]="{
                     'block': (searchingMode$ | async) != 'selected',
                     'hidden': (searchingMode$ | async) === 'selected'
                 }" />
