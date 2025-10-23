@@ -48,8 +48,8 @@
                         *ngTemplateOutlet="orcid_profile_entry; context: { $implicit: userSelected, profile: userSelected }"></ng-container>
                 </div>
 
-            </ng-container>
-            <input class="grow py-2.5 sm:py-3 outline-none" name="orcid-id-input" type="text" role="combobox"
+            </div>
+            <input class="grow py-2.5 sm:py-3 outline-none" name="orcid-id-input" type="text" role="combobox" (input)="onInput($event)"
                 aria-expanded="false" [ngModel]="searchText" (ngModelChange)="searchText = $event; onInput($event)" #searchInput
                 (keyup)="keyPress($event)" [placeholder]="placeholder$ | async" [ngClass]="{
                     'block': (searchingMode$ | async) != 'selected',
