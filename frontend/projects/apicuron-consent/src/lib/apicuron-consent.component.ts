@@ -4,16 +4,20 @@ import {
   ConfigInput,
   ConfigService,
 } from './services/config.service';
-import { ApicuronConsentService } from './apicuron-consent.service';
+import {
+  ApicuronConsentService,
+  ConsentValue,
+} from './apicuron-consent.service';
 import { OrcidService } from './services/orcid.service';
 import { ConsentClientService } from './services/consent-client.service';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 export const AConsentProviders = [
   ConfigService,
   ConsentClientService,
   ApicuronConsentService,
   OrcidService,
 ];
+
 @Component({
   selector: 'apicuron-consent',
   templateUrl: `./apicuron-consent.component.html`,
@@ -21,6 +25,7 @@ export const AConsentProviders = [
 })
 export class ApicuronConsentComponent implements OnInit {
   config$: Observable<ComponentConf>;
+  disabled$ = new BehaviorSubject<boolean>(false);
   constructor(
     protected configService: ConfigService,
     protected orcidService: OrcidService,
@@ -35,5 +40,13 @@ export class ApicuronConsentComponent implements OnInit {
     if (this.configService.configValue === null) {
       throw new Error('Configuration is required for ApicuronConsentComponent');
     }
+  }
+
+  @Input('value') set initialValues(value: ConsentValue) {
+    this.consentService.setValue(value);
+  }
+
+  @Input('disabled') set disabled(value: boolean) {
+    this.disabled$.next(value);
   }
 }

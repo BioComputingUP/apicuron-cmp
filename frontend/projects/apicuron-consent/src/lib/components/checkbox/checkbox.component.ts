@@ -25,7 +25,7 @@ export class ConsentCheckboxComponent {
     this.darkMode$.next(value);
   }
 
-  @Input() set consentGiven(value: boolean) {
+  @Input('value') set consentGiven(value: boolean) {
     this.form.setValue(value);
   }
 }

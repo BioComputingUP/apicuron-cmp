@@ -39,7 +39,14 @@ const ExampleConfig: ConfigInput = {
       <div
         class="bg-base-200 p-8 rounded-lg min-h-32 border-2 border-dashed border-base-300 flex items-center justify-center dark:bg-base-200 dark:border-base-100"
       >
-        <apicuron-consent [config]="exampleConfig"></apicuron-consent>
+        <apicuron-consent
+          [config]="exampleConfig"
+          [disabled]="true"
+          [value]="{
+            orcidId: '0000-0001-9531-6339',
+            consent: true
+          }"
+        ></apicuron-consent>
       </div>
     </div>
   </div>`,

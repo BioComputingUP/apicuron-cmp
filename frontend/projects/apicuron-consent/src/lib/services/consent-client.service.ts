@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { ConfigService, Permission } from './config.service';
-import { map, Observable, switchMap, take } from 'rxjs';
-import { OrcidProfile } from '../model/orcid-profile.model';
+import { Observable, switchMap } from 'rxjs';
 import { Injectable } from '@angular/core';
+
+
 
 @Injectable()
 export class ConsentClientService {
@@ -10,6 +11,8 @@ export class ConsentClientService {
   constructor(protected http: HttpClient, protected config: ConfigService) {
     this.apiUrl$ = this.config.get('apiUrl');
   }
+
+ 
 
   grantConsent(orcidId: string, permission: Permission) {
     return this.apiUrl$.pipe(

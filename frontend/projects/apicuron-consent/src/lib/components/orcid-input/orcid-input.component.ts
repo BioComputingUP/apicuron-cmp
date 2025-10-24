@@ -4,10 +4,11 @@ import {
   ElementRef,
   HostListener,
   Input,
+  OnDestroy,
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { BehaviorSubject, Observable, startWith, take, tap } from 'rxjs';
+import { Observable, startWith, Subject, take, takeUntil, tap } from 'rxjs';
 import { OrcidService } from '../../services/orcid.service';
 import { LoadingState } from '../../util/operators';
 import { OrcidProfile } from '../../model/orcid-profile.model';
@@ -27,12 +28,16 @@ import { isValidOrcid } from '../../util/orcid-checksum';
   providers: [OrcidInputSearchService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OrcidInputComponent implements OnInit {
+export class OrcidInputComponent implements OnInit, OnDestroy {
   searchQuery$: Observable<string>;
   suggestions$: Observable<LoadingState<OrcidProfile[]>>;
   searchText: string = '';
   placeholder$: Observable<string>;
   selectedOrcidProfile: FormControl<OrcidProfile | null>;
+  private destroy$ = new Subject<void>();
+  ngOnDestroy(): void {
+    this.destroy$.next();
+  }
   userSelected$: Observable<OrcidProfile | null>;
   config$: Observable<ComponentConf>;
   disabled$: Observable<boolean>;
@@ -55,6 +60,8 @@ export class OrcidInputComponent implements OnInit {
     this.suggestions$ = this.inputService.suggestions$;
     this.searchMode$ = this.inputService.searchMode$;
     this.disabled$ = this.inputService.disabled$;
+
+    this.setupResetOn();
   }
 
   ngOnInit(): void {}
@@ -77,12 +84,7 @@ export class OrcidInputComponent implements OnInit {
           'Invalid ORCID string provided to orcid-input component'
         );
       }
-      this.orcidService.getOrcidProfile(profile).pipe(
-        take(1),
-        tap((fetchedProfile: OrcidProfile) => {
-          this.selectProfile(fetchedProfile);
-        })
-      ).subscribe();
+      this.consentService.setSelectedProfile(profile);
       return;
     }
     try {
@@ -104,10 +106,20 @@ export class OrcidInputComponent implements OnInit {
   }
   @ViewChild('searchInput', { static: false })
   searchInputElementRef!: ElementRef<HTMLInputElement>;
-  
+
   selectProfile(profile: OrcidProfile) {
-    this.inputService.searchMode = 'selected';
     this.selectedOrcidProfile.setValue(profile);
+  }
+
+  setupResetOn() {
+    this.selectedOrcidProfile.valueChanges
+      .pipe(
+        tap((profile) => {
+          this.inputService.searchMode = profile == null ? 'idle' : 'selected';
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
   }
 
   keyPress(event: KeyboardEvent) {
