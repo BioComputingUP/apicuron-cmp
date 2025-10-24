@@ -1,5 +1,12 @@
-import { Observable, OperatorFunction, of } from 'rxjs';
-import { switchMap, catchError, startWith, scan, map } from 'rxjs/operators';
+import { Observable, OperatorFunction, combineLatest, of } from 'rxjs';
+import {
+  switchMap,
+  catchError,
+  startWith,
+  scan,
+  map,
+  filter,
+} from 'rxjs/operators';
 
 export interface LoadingState<T = unknown> {
   loading: boolean;
@@ -23,5 +30,15 @@ export function switchMapWithLoading<T>(
         ...state,
         ...change,
       }))
+    );
+}
+
+export function skipWhileTrue<T>(
+  control$: Observable<boolean>
+): OperatorFunction<T, T> {
+  return (source$: Observable<T>): Observable<T> =>
+    combineLatest([source$, control$]).pipe(
+      filter(([_, condition]) => !condition),
+      map(([value, _]) => value)
     );
 }

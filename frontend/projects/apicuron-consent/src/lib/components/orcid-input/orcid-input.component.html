@@ -39,8 +39,8 @@
         <div
             class="px-2 md:px-4 flex  flex-row items-center w-full bg-white border-gray-200 rounded-lg sm:text-sm border-2 border-transparent focus-within:border-blue-500 focus-within:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none min-h-10 shadow-lg">
             <div *ngIf="userSelected$ | async as userSelected" [ngClass]="{
-            'block': (searchingMode$ | async) === 'selected',
-            'hidden': (searchingMode$ | async) !== 'selected' }"
+            'block': (searchMode$ | async) === 'selected',
+            'hidden': (searchMode$ | async) !== 'selected' }"
                 class="bg-white py-2.5 sm:py-3 flex flex-row items-center pr-1 sm:pr-2 grow">
                 <ng-container
                     *ngTemplateOutlet="orcid_profile_entry; context: { $implicit: userSelected, profile: userSelected }"></ng-container>
@@ -48,13 +48,16 @@
             <input class="grow py-2.5 sm:py-3 outline-none" name="orcid-id-input" type="text" role="combobox"
                 (input)="onInput($event)" aria-expanded="false" [ngModel]="searchText"
                 (ngModelChange)="searchText = $event; onInput($event)" #searchInput (keyup)="keyPress($event)"
-                [placeholder]="placeholder$ | async" [ngClass]="{
-                    'block': (searchingMode$ | async) != 'selected',
-                    'hidden': (searchingMode$ | async) === 'selected'
+                autocomplete="false" [disabled]="(disabled$ | async) == true" [placeholder]="placeholder$ | async"
+                [ngClass]="{
+                    'block': (searchMode$ | async) != 'selected',
+                    'hidden': (searchMode$ | async) === 'selected'
                 }" />
-            <div class="ml-auto flex flex-col justify-center" aria-expanded="false" role="button">
+            <div class="ml-auto flex flex-col justify-center"
+                [ngClass]="{ 'hidden': disabled$ | async, 'flex': !(disabled$ | async) }" aria-expanded="false"
+                role="button">
                 <!-- Search icon, displayed when the idle, starts search -->
-                <button [ngClass]="{ 'hidden': (searchingMode$ | async) != 'idle' }" (click)="openSearch()">
+                <button [ngClass]="{ 'hidden': (searchMode$ | async) != 'idle' }" (click)="openSearch()">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-4">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -63,7 +66,7 @@
 
                 </button>
                 <!-- Cross icon, displayed when not idle (searching or selected) -->
-                <button [ngClass]="{ 'hidden': (searchingMode$ | async) == 'idle' }" (click)="closeAndResetSearch()">
+                <button [ngClass]="{ 'hidden': (searchMode$ | async) == 'idle' }" (click)="closeAndResetSearch()">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-4">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -75,8 +78,8 @@
     </div>
     <div class="absolute z-50 w-full max-h-72 p-1 bg-white border border-gray-200 rounded-lg overflow-hidden overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 flex-col"
         role="listbox" [ngClass]="{
-            'hidden': (searchingMode$ | async) != 'searching',
-            'flex min-h-12': (searchingMode$ | async) === 'searching'
+            'hidden': (searchMode$ | async) != 'searching',
+            'flex min-h-12': (searchMode$ | async) === 'searching'
         }">
         <ng-container *ngIf="suggestions$ | async as suggestions">
             <!-- Have suggestions -->
