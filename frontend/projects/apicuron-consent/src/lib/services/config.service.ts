@@ -1,7 +1,6 @@
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, filter, map, Observable } from 'rxjs';
-import { ACONSENT_CONFIG } from '../constants';
 
 export type ConfigInput = {
   apiUrl: string;
