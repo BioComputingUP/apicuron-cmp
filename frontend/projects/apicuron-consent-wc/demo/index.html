@@ -8,27 +8,33 @@
 </head>
 
 <body>
-    <ac-apicuron-consent></ac-apicuron-consent>
+    <ac-apicuron-consent disabled="true" value-orcid="0000-0001-9531-6339"></ac-apicuron-consent>
 
     <script src="./widget.js"></script>
     <script>
 
-        // (function () {
-        //     const widget = document.querySelector("ac-apicuron-consent");
-        //     const config = {
 
-        //         apiUrl: 'http://localhost:3000/',
-        //         privacyPolicyUrl: 'https://raw.githubusercontent.com/intact-portal/intact-portal-documentation/master/assets/IntAct-and-Complex-Portal-websites-privacy-notice.pdf',
-        //         tosUrl: 'https://www.ebi.ac.uk/about/terms-of-use/',
-        //     }
-        //     widget.config = config;
-        // })();
         (async function () {
-            if (!!window.AConsentWidget) {
-                console.log(' widget config');
-            } else {
-                console.error('ConsentWidget function not found');
+            const consentWidget = document.querySelector('ac-apicuron-consent');
+            if (!consentWidget) {
+                console.error('Consent widget not found');
+                return;
             }
+
+            consentWidget.config = {
+                apiUrl: 'http://localhost:3000/',
+                privacyPolicyUrl:
+                    'https://raw.githubusercontent.com/intact-portal/intact-portal-documentation/master/assets/IntAct-and-Complex-Portal-websites-privacy-notice.pdf',
+                tosUrl: 'https://www.ebi.ac.uk/about/terms-of-use/',
+                orcidInputLabel: 'Enter your ORCID ID',
+                searchHint:
+                    'You can link your Account to your ORCID ID to get credited for your contributions.',
+                permission_name: 'Example Permission',
+                permission_description: 'This is an example permission description.',
+                permission_identifier: 'example_permission_001',
+            };
+
+
         })();
     </script>
 </body>

@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ConsentCheckboxComponent } from './components/checkbox/checkbox.component';
+import { AConsentProviders } from './apicuron-consent.component';
 
 @NgModule({
   declarations: [
@@ -13,7 +14,7 @@ import { ConsentCheckboxComponent } from './components/checkbox/checkbox.compone
     ApicuronConsentComponent,
   ],
   imports: [CommonModule, ReactiveFormsModule, FormsModule, HttpClientModule],
-  providers: [],
+  providers: [...AConsentProviders],
   exports: [
     ApicuronConsentComponent,
     OrcidInputComponent,

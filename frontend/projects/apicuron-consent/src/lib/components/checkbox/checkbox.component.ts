@@ -14,10 +14,11 @@ export class ConsentCheckboxComponent {
   privacyPolicyUrl$: Observable<string>;
   tosUrl$: Observable<string>;
   darkMode$ = new BehaviorSubject<boolean>(false);
+  customId = `consent-checkbox-${Math.floor(Math.random() * 10000)}`;
 
-  form: FormControl<boolean>;
+  controlForm: FormControl<boolean>;
   constructor(protected config: ConfigService, protected consentService: ApicuronConsentService) {
-    this.form = this.consentService.consentGiven$;
+    this.controlForm = this.consentService.consentGiven$;
     this.privacyPolicyUrl$ = this.config.get('privacyPolicyUrl');
     this.tosUrl$ = this.config.get('tosUrl');
   }
@@ -26,6 +27,6 @@ export class ConsentCheckboxComponent {
   }
 
   @Input('value') set consentGiven(value: boolean) {
-    this.form.setValue(value);
+    this.controlForm.setValue(value);
   }
 }

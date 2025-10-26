@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { OrcidProfile } from './model/orcid-profile.model';
 import { ComponentConf, ConfigService } from './services/config.service';
-import { lastValueFrom, map, Observable, take, tap } from 'rxjs';
+import { EMPTY, lastValueFrom, map, Observable, startWith, switchMap, take, tap } from 'rxjs';
 import { ConsentClientService } from './services/consent-client.service';
 import { OrcidService } from './services/orcid.service';
+import { isValidOrcid } from './util/orcid-checksum';
 
 type ConsentPayload = {
   orcidId: string;
@@ -23,7 +24,7 @@ export type ConsentValue = {
 export class ApicuronConsentService {
   consentGiven$ = new FormControl<boolean>(false, { nonNullable: true });
   selectedProfile$ = new FormControl<OrcidProfile | null>(null);
-  config$: Observable<ComponentConf>;
+  private config$: Observable<ComponentConf>;
   constructor(
     protected consentClient: ConsentClientService,
     protected orcidService: OrcidService,
@@ -32,42 +33,57 @@ export class ApicuronConsentService {
     this.config$ = this.config.config$;
   }
 
-  
   setValue(value: ConsentValue) {
-    this.consentGiven$.setValue(value.consent);
+    this.setConsentGiven(value.consent);
     this.setSelectedProfile(value.orcidId);
   }
-  
+
+  setConsentGiven(value: boolean) {
+    console.log('Setting consent given to:', value);
+    this.consentGiven$.setValue(value);
+  }
+
   /**
    * This is just a utility method to set the selected profile by ORCID ID.
    * it fetches the profile and sets it to the selectedProfile$ FormControl.
    * @param orcidId The ORCID ID of the profile
    */
   async setSelectedProfile(orcidId: string) {
-    this.orcidService.getOrcidProfile(orcidId).pipe(
-      take(1),
-      tap((fetchedProfile: OrcidProfile) =>
-        this.selectedProfile$.setValue(fetchedProfile)
+    if (!orcidId || !isValidOrcid(orcidId)) {
+      this.selectedProfile$.setValue(null);
+      console.error('null-ish or Invalid ORCID ID provided:', orcidId);
+      return;
+    }
+    this.orcidService
+      .getOrcidProfile(orcidId)
+      .pipe(
+        take(1),
+        tap((fetchedProfile: OrcidProfile) =>
+          this.selectedProfile$.setValue(fetchedProfile)
+        )
       )
-    ).subscribe();
+      .subscribe();
   }
 
-
   async submitConsent() {
+    if (!this.consentGiven$.valid || !this.selectedProfile$.valid) {
+      console.warn('Cannot submit consent, invalid form values');
+      return;
+    }
     const consentGiven = this.consentGiven$.value;
     const selectedProfile = this.selectedProfile$.value;
 
     const obs$ = this.config$.pipe(
-      map((conf) => {
+      switchMap((conf) => {
         if (!consentGiven || !selectedProfile) {
-          return;
+          return EMPTY;
         }
-        const obs$ = this.consentClient.grantConsent(selectedProfile.orcid_id, {
+        const reqObs$ = this.consentClient.grantConsent(selectedProfile.orcid_id, {
           name: conf.permission_name,
           description: conf.permission_description,
           identifier: conf.permission_identifier,
         });
-        return obs$;
+        return reqObs$;
       }),
       take(1)
     );

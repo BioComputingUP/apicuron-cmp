@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import {
   ComponentConf,
   ConfigInput,
@@ -21,7 +21,8 @@ export const AConsentProviders = [
 @Component({
   selector: 'apicuron-consent',
   templateUrl: `./apicuron-consent.component.html`,
-  providers: AConsentProviders,
+  styleUrls: ['../../styles.css'],
+  encapsulation: ViewEncapsulation.ShadowDom,
 })
 export class ApicuronConsentComponent implements OnInit {
   config$: Observable<ComponentConf>;
@@ -37,16 +38,43 @@ export class ApicuronConsentComponent implements OnInit {
     this.configService.loadConfiguration(value);
   }
   ngOnInit(): void {
-    if (this.configService.configValue === null) {
-      throw new Error('Configuration is required for ApicuronConsentComponent');
-    }
+    console.log(
+      'Apicuron Consent Component initialized',
+      this.consentService.consentGiven$.value
+    );
   }
 
-  @Input('value') set initialValues(value: ConsentValue) {
+  @Input('value') set initialValues(value: ConsentValue | undefined | null) {
+    if (!value) {
+      return;
+    }
+    console.log('Setting initial values', value);
     this.consentService.setValue(value);
   }
 
-  @Input('disabled') set disabled(value: boolean) {
-    this.disabled$.next(value);
+  @Input('value-orcid') set initialOrcid(value: string | undefined | null) {
+    if (!value) {
+      return;
+    }
+    this.consentService.setSelectedProfile(value);
+  }
+
+  @Input('value-consent') set initialConsent(
+    value: 'true' | 'false' | undefined | null
+  ) {
+    if (!value || value == null) {
+      return;
+    }
+    console.log('Setting initial consent', value);
+    this.consentService.setConsentGiven(value == 'true');
+  }
+
+  @Input('disabled') set disabled(value: string | boolean | undefined | null) {
+    if(typeof value == 'string' && value == 'true'){
+      this.disabled$.next(true);
+    }
+    if(typeof value == 'boolean'){
+      this.disabled$.next(value);
+    }
   }
 }

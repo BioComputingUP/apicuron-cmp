@@ -4,6 +4,8 @@ const { join } = require("path");
 const demoDir = "projects/apicuron-consent-wc/demo/";
 (async function build() {
   const files = [
+    "./dist/apicuron-consent-wc/vendor.js",
+    "./dist/apicuron-consent-wc/runtime.js",
     "./dist/apicuron-consent-wc/polyfills.js",
     "./dist/apicuron-consent-wc/main.js",
   ];

@@ -10,35 +10,39 @@ import { BrowserModule } from '@angular/platform-browser';
 import {
   ApicuronConsentModule,
   ApicuronConsentComponent,
-  AConsentProviders
+  AConsentProviders,
+  ApicuronConsentService,
 } from '../../apicuron-consent/src/public-api';
 import { createCustomElement } from '@angular/elements';
 import { CommonModule } from '@angular/common';
 import { WIDGET_SELECTOR } from './constants';
 
-// This is a wrapper component
-// It just sets encapsulation:ShadowDom & binds prebuilt styles to the component
-// This allows for the web component to have its own styles isolated from the host page
-@Component({
-  templateUrl: '../../apicuron-consent/src/lib/apicuron-consent.component.html',
-  styleUrls: ['../../apicuron-consent/styles.css'],
-  providers: [...AConsentProviders],
-  encapsulation: ViewEncapsulation.ShadowDom,
-})
-export class WrapperComponent extends ApicuronConsentComponent {}
+declare global {
+  interface Window {
+    AConsentService: ApicuronConsentService;
+  }
+}
 
 @NgModule({
   imports: [BrowserModule, CommonModule, ApicuronConsentModule],
-  declarations: [WrapperComponent],
+  // declarations: [WrapperComponent],
   exports: [],
 })
 export class AppModule implements DoBootstrap {
   constructor(private injector: Injector) {}
 
   ngDoBootstrap(appRef: ApplicationRef): void {
+    console.log('Defining custom element', WIDGET_SELECTOR);
     customElements.define(
       WIDGET_SELECTOR,
-      createCustomElement(WrapperComponent, { injector: this.injector })
+      createCustomElement(ApicuronConsentComponent, {
+        injector: appRef.injector,
+      })
     );
+
+    const consentService: ApicuronConsentService = appRef.injector.get(
+      ApicuronConsentService
+    );
+    window.AConsentService = consentService;
   }
 }

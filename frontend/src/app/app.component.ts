@@ -1,13 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {
-  ApicuronConsentModule,
-  ConfigInput,
-  provideAConsentConfig,
-} from 'apicuron-consent';
+import { ApicuronConsentModule, ConfigInput } from 'apicuron-consent';
 import { BaseExampleComponent } from './examples/base.component';
-import { SubmitDataExampleComponent } from './examples/submit-data.component';
 
 const ExampleConfig: ConfigInput = {
   apiUrl: 'http://localhost:3000/',
@@ -31,9 +26,9 @@ const ExampleConfig: ConfigInput = {
     ReactiveFormsModule,
     ApicuronConsentModule,
     BaseExampleComponent,
-    // SubmitDataExampleComponent
   ],
-  providers: [provideAConsentConfig(ExampleConfig)],
+  encapsulation: ViewEncapsulation.None,
+  providers: [],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
