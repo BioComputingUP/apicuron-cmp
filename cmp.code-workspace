@@ -21,6 +21,6 @@
         },
     ],
     "settings": {
-        "typescript.tsdk": "frontend/node_modules/typescript/lib"
+        "typescript.tsdk": "backend/node_modules/typescript/lib"
     }
 }

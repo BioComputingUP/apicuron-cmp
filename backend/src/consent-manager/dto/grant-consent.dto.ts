@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, ValidateNested } from 'class-validator';
 import { IsOrcid } from 'src/util/orcid-checksum';
 import { Permission } from '../events';
-class PermissionDto implements Permission {
+export class PermissionDto implements Permission {
   @ApiProperty({
     example: 'Send personal data to third party',
     description: 'The name of the permission',

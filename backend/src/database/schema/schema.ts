@@ -28,7 +28,7 @@ export const userConsents = sqliteTable('USER_CONSENTS', {
 
 export const perimissionsRelations = relations(permissions, ({ one }) => ({
   user: one(userConsents, {
-    fields: [permissions.id],
+    fields: [permissions.user_id],
     references: [userConsents.id],
   }),
 }));
