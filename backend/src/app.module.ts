@@ -15,7 +15,8 @@ import { OrcidModule } from './orcid/orcid.module';
     }),
     OrcidModule,
     KurrentModule.forRoot({
-      connectionString: 'kurrentdb://kurrentdb:2113?tls=false',
+      connectionString:
+        'kurrentdb://kurrentdb:2113?tls=false&gossipTimeout=10&defaultDeadline=10000&keepAliveInterval=15000&keepAliveTimeout=15',
     }),
     ConsentManagerModule,
     DatabaseModule.forRootAsync({

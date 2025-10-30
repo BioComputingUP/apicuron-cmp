@@ -6,7 +6,6 @@ import { eq } from 'drizzle-orm';
 import { permissions, userConsents } from 'src/database/schema/schema';
 import { PermissionsJson, permissionsSchema } from '../util/permissions-json';
 import { OrcidPermissionGrantedEvent, Permission } from '../events';
-// import { userConsents } from 'src/database/schema/schema';
 
 @EventsHandler(OrcidPermissionGrantedEvent)
 export class OrcidPermissionGrantedHandler
@@ -79,7 +78,6 @@ export class OrcidPermissionGrantedHandler
         .insert(userConsents)
         .values(newUser)
         .returning()
-        // .run()
         .catch((err) => {
           this.logger.error('Error inserting into userConsents table:', err);
           throw err;

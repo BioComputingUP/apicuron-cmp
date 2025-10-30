@@ -21,6 +21,7 @@ export class GrantConsentCommandHandler
   async execute(
     command: GrantConsentCommand,
   ): Promise<EventData<OrcidPermissionGrantedEventType>> {
+    this.logger.debug(`received command: ${JSON.stringify(command)}`);
     // Ensuring optimistic concurrency by checking the last event
     // https://docs.kurrent.io/clients/node/v1.0/appending-events.html#handling-concurrency
     const { orcidId, permission, timestamp } = command;
@@ -39,13 +40,17 @@ export class GrantConsentCommandHandler
     };
     const event = jsonEvent<OrcidPermissionGrantedEventType>(eventObj);
 
-    await this.eventdb.client.appendToStream(
-      UserConsent.getStream(orcidId),
-      event,
-      {
-        streamState: revision,
-      },
+    const streamId = UserConsent.getStream(orcidId);
+
+    this.logger.debug(
+      `Event ${JSON.stringify(event)} created and will be appended to stream ${streamId}`,
     );
+
+    await this.eventdb.client.appendToStream(streamId, event, {
+      streamState: revision,
+    });
+
+    this.logger.debug(`Event appended to stream ${streamId} successfully`);
 
     return event;
   }

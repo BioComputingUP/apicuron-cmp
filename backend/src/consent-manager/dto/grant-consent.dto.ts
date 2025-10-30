@@ -3,9 +3,15 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, ValidateNested } from 'class-validator';
 import { IsOrcid } from 'src/util/orcid-checksum';
 import { Permission } from '../events';
+
+export const examplePermissionDto = {
+  name: 'Send personal data to third party',
+  description: 'Allows sending personal data to a third party.',
+  identifier: 'send-personal-data-to-third-party',
+} as const;
 export class PermissionDto implements Permission {
   @ApiProperty({
-    example: 'Send personal data to third party',
+    example: examplePermissionDto.name,
     description: 'The name of the permission',
   })
   @IsString()
@@ -13,7 +19,7 @@ export class PermissionDto implements Permission {
   name: string;
 
   @ApiProperty({
-    example: 'Allows the application to send personal data to a third party.',
+    example: examplePermissionDto.description,
     description: 'A brief description of the permission',
   })
   @IsString()
@@ -21,7 +27,7 @@ export class PermissionDto implements Permission {
   description: string;
 
   @ApiProperty({
-    example: 'send-personal-data-to-third-party',
+    example: examplePermissionDto.identifier,
     description: 'The unique identifier for the permission',
   })
   @IsString()

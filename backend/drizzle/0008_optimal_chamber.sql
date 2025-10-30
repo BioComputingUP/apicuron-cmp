@@ -1,0 +1,1 @@
+DROP INDEX `PERMISSIONS_identifier_unique`;

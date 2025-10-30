@@ -1,9 +1,10 @@
+import { BadRequestException, PipeTransform } from '@nestjs/common';
 import {
   registerDecorator,
   ValidatorConstraintInterface,
 } from 'class-validator';
 
-const OrcidRegex = /^(\d{4}-){3}\d{3}(\d|X)$/;
+export const OrcidRegex = /^(\d{4}-){3}\d{3}(\d|X)$/;
 
 export function isValidOrcid(orcid_id: string): boolean {
   const strippedOrcid = orcid_id.trim();
@@ -49,3 +50,12 @@ export function IsOrcid(): PropertyDecorator {
     });
   };
 }
+
+export const OrcidIdPipe: PipeTransform<string, string> = {
+  transform(value: string): string {
+    if (!isValidOrcid(value)) {
+      throw new BadRequestException(`Invalid ORCID ID: ${value}`);
+    }
+    return value;
+  },
+};

@@ -3,7 +3,7 @@ import { text, integer, sqliteTable } from 'drizzle-orm/sqlite-core';
 
 export const permissions = sqliteTable('PERMISSIONS', {
   id: integer().primaryKey({ autoIncrement: true }),
-  identifier: text().notNull().unique(),
+  identifier: text().notNull(),
   name: text().notNull(),
   description: text().notNull(),
   user_id: integer().notNull(),
