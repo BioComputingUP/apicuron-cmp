@@ -34,6 +34,15 @@ services:
       - type: volume
         source: kurrentdb-volume-logs
         target: /var/log/kurrentdb
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl --fail --insecure https://node1.kurrentdb:2113/health/live || exit 1",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 24
 
 volumes:
   kurrentdb-volume-data:
