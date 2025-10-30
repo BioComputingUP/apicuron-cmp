@@ -67908,8 +67908,12 @@ class ApicuronConsentComponent {
   }
 
   set disabled(value) {
-    if (value == 'true') {
+    if (typeof value == 'string' && value == 'true') {
       this.disabled$.next(true);
+    }
+
+    if (typeof value == 'boolean') {
+      this.disabled$.next(value);
     }
   }
 

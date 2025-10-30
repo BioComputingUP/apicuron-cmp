@@ -2,8 +2,22 @@ import { Injectable } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { OrcidProfile } from './model/orcid-profile.model';
 import { ComponentConf, ConfigService } from './services/config.service';
-import { EMPTY, lastValueFrom, map, Observable, startWith, switchMap, take, tap } from 'rxjs';
-import { ConsentClientService } from './services/consent-client.service';
+import {
+  combineLatest,
+  EMPTY,
+  lastValueFrom,
+  map,
+  Observable,
+  of,
+  startWith,
+  switchMap,
+  take,
+  tap,
+} from 'rxjs';
+import {
+  ConsentClientService,
+  UserConsentState,
+} from './services/consent-client.service';
 import { OrcidService } from './services/orcid.service';
 import { isValidOrcid } from './util/orcid-checksum';
 
@@ -54,12 +68,20 @@ export class ApicuronConsentService {
       console.error('null-ish or Invalid ORCID ID provided:', orcidId);
       return;
     }
-    this.orcidService
-      .getOrcidProfile(orcidId)
+    const fetchUser$ = this.orcidService.getOrcidProfile(orcidId);
+    const fetchPermission$ = this.consentClient.fetchConsentState(orcidId);
+
+    combineLatest([fetchUser$, fetchPermission$])
       .pipe(
         take(1),
-        tap((fetchedProfile: OrcidProfile) =>
-          this.selectedProfile$.setValue(fetchedProfile)
+        tap(
+          ([fetchedProfile, consentState]: [
+            OrcidProfile,
+            UserConsentState
+          ]) => {
+            this.selectedProfile$.setValue(fetchedProfile);
+            this.setConsentGiven(consentState.hasPermission);
+          }
         )
       )
       .subscribe();
@@ -67,7 +89,6 @@ export class ApicuronConsentService {
 
   async submitConsent() {
     if (!this.consentGiven$.valid || !this.selectedProfile$.valid) {
-      console.warn('Cannot submit consent, invalid form values');
       return;
     }
     const consentGiven = this.consentGiven$.value;
@@ -76,13 +97,16 @@ export class ApicuronConsentService {
     const obs$ = this.config$.pipe(
       switchMap((conf) => {
         if (!consentGiven || !selectedProfile) {
-          return EMPTY;
+          return of(null);
         }
-        const reqObs$ = this.consentClient.grantConsent(selectedProfile.orcid_id, {
-          name: conf.permission_name,
-          description: conf.permission_description,
-          identifier: conf.permission_identifier,
-        });
+        const reqObs$ = this.consentClient.grantConsent(
+          selectedProfile.orcid_id,
+          {
+            name: conf.permission_name,
+            description: conf.permission_description,
+            identifier: conf.permission_identifier,
+          }
+        );
         return reqObs$;
       }),
       take(1)

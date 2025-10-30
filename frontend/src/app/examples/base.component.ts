@@ -1,7 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ApicuronConsentModule, ConfigInput } from 'apicuron-consent';
+import {
+  ApicuronConsentModule,
+  ApicuronConsentService,
+  ConfigInput,
+} from 'apicuron-consent';
 import { filter, map, ReplaySubject } from 'rxjs';
 
 const ExampleConfig: ConfigInput = {
@@ -65,6 +69,17 @@ const ExampleConfig: ConfigInput = {
             (click)="setOrcidId(orcidIdInput.value)"
           />
         </form>
+
+        <form class="flex flex-row gap-2">
+          <label for="input-orcid-id">Submit consent to server</label>
+          <button
+            class="btn btn-xs bg-primary text-white dark:bg-primary dark:text-base-content opacity-100 disabled:opacity-60 disabled:cursor-not-allowed border border-primary dark:border-primary"
+            (click)="submitConsent()"
+            [disabled]="submitting"
+          >
+            Submit Consent
+          </button>
+        </form>
         <!-- <button class="btn btn-xs btn-accent dark:btn-outline">
           Send Data
         </button> -->
@@ -93,6 +108,13 @@ const ExampleConfig: ConfigInput = {
   </div>`,
 })
 export class BaseExampleComponent implements AfterViewInit {
+  constructor(protected consentService: ApicuronConsentService) {}
+  submitting: boolean = false;
+  async submitConsent() {
+    this.submitting = true;
+    await this.consentService.submitConsent();
+    this.submitting = false;
+  }
   exampleConfig = ExampleConfig;
   isDisabled: boolean = false;
   orcidId$ = new ReplaySubject<string>(1);
